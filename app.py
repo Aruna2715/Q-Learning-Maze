@@ -742,16 +742,53 @@ def create_q_value_heatmap():
 
     figure.update_layout(
         height=980,
-        title="Learned Q-Values for Every State and Action",
+        title={
+            "text": "Learned Q-Values for Every State and Action",
+            "font": {
+                "color": "#273755",
+                "size": 21,
+            },
+        },
         paper_bgcolor="rgba(255,255,255,0)",
         plot_bgcolor="rgba(255,255,255,0.8)",
-        font={"color": "#34435f"},
-        title_font={"color": "#273755", "size": 21},
-        margin=dict(l=80, r=40, t=70, b=50),
+        font={
+            "color": "#34435f",
+        },
+        margin=dict(
+            l=80,
+            r=40,
+            t=70,
+            b=50,
+        ),
         coloraxis_colorbar={
-            "title": "Q-Value",
-            "tickfont": {"color": "#34435f"},
-            "titlefont": {"color": "#34435f"},
+            "title": {
+                "text": "Q-Value",
+                "font": {
+                    "color": "#34435f",
+                },
+            },
+            "tickfont": {
+                "color": "#34435f",
+            },
+        },
+    )
+
+    figure.update_xaxes(
+        side="bottom",
+        tickfont={
+            "color": "#34435f",
+        },
+        title_font={
+            "color": "#34435f",
+        },
+    )
+
+    figure.update_yaxes(
+        tickfont={
+            "color": "#34435f",
+        },
+        title_font={
+            "color": "#34435f",
         },
     )
 
@@ -1348,7 +1385,6 @@ elif page == "🧭 Optimal Policy":
         "■ Obstacle | S Start | G Goal"
     )
 
-
 # ---------------------------------------------------------
 # Q-TABLE EXPLORER PAGE
 # ---------------------------------------------------------
@@ -1360,6 +1396,21 @@ elif page == "🔢 Q-Table Explorer":
     )
 
     q_dataframe = get_q_table_dataframe()
+
+    st.markdown(
+        """
+        <div class="info-card">
+            <h3>Understanding the Q-Table</h3>
+            <p>
+                Each row represents a maze state, while each column
+                represents one possible action. A higher Q-value means
+                the action is more useful for reaching the goal from
+                that state.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     st.plotly_chart(
         create_q_value_heatmap(),
@@ -1383,18 +1434,32 @@ elif page == "🔢 Q-Table Explorer":
 
     if environment.maze[selected_position] == 1:
         state_type = "Obstacle"
+
     elif selected_position == environment.start_position:
         state_type = "Start State"
+
     elif selected_position == environment.goal_position:
         state_type = "Goal State"
+
     else:
         state_type = "Valid State"
 
     col1, col2, col3 = st.columns(3)
 
-    col1.metric("State", selected_state)
-    col2.metric("Position", str(selected_position))
-    col3.metric("State Type", state_type)
+    col1.metric(
+        "State",
+        selected_state,
+    )
+
+    col2.metric(
+        "Position",
+        str(selected_position),
+    )
+
+    col3.metric(
+        "State Type",
+        state_type,
+    )
 
     selected_q_values = pd.DataFrame(
         {
@@ -1415,13 +1480,36 @@ elif page == "🔢 Q-Table Explorer":
             "#e0a84e",
             "#e47b91",
         ],
+        text="Q-Value",
+    )
+
+    state_figure.update_traces(
+        texttemplate="%{text:.2f}",
+        textposition="outside",
+        cliponaxis=False,
+        hovertemplate=(
+            "Action: %{x}<br>"
+            "Q-Value: %{y:.3f}<extra></extra>"
+        ),
     )
 
     state_figure.update_layout(
         showlegend=False,
+        title={
+            "text": f"Action Values for State {selected_state}",
+            "font": {
+                "color": "#273755",
+                "size": 20,
+            },
+        },
+        xaxis_title="Available Action",
+        yaxis_title="Learned Q-Value",
     )
 
-    apply_light_chart_theme(state_figure, height=420)
+    apply_light_chart_theme(
+        state_figure,
+        height=420,
+    )
 
     st.plotly_chart(
         state_figure,
@@ -1433,8 +1521,8 @@ elif page == "🔢 Q-Table Explorer":
         best_value = selected_values.max()
 
         st.success(
-            f"Best learned action: {best_action} "
-            f"with Q-value {best_value:.2f}"
+            f"Best learned action from state {selected_state}: "
+            f"{best_action}, with a Q-value of {best_value:.2f}."
         )
 
     elif state_type == "Obstacle":
@@ -1445,17 +1533,27 @@ elif page == "🔢 Q-Table Explorer":
 
     else:
         st.info(
-            "This is the terminal goal state. No further action "
-            "is required after reaching it."
+            "This is the terminal goal state. No additional action "
+            "is required after the agent reaches this state."
         )
+
+    st.markdown("### Selected State Q-Values")
+
+    st.dataframe(
+        selected_q_values.style.format(
+            {
+                "Q-Value": "{:.3f}",
+            }
+        ),
+        use_container_width=True,
+        hide_index=True,
+    )
 
     with st.expander("View complete Q-table"):
         st.dataframe(
             q_dataframe.style.format("{:.3f}"),
             use_container_width=True,
         )
-
-
 # ---------------------------------------------------------
 # ABOUT PAGE
 # ---------------------------------------------------------
