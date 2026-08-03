@@ -274,11 +274,12 @@ streamlit run app.py
 
 | Field | Information |
 |-------|-------------|
+| Intern Name | Aruna V S |
+| Intern ID | CITS5433 |
 | Internship | Machine Learning Internship |
 | Organization | CODTECH IT Solutions |
 | Task | Task 2 – Deep Reinforcement Learning (Q-Learning) |
-| Intern Name | Aruna V S |
-| Intern ID | CITS5433 |
+
 
 ---
 
