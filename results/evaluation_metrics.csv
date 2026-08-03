@@ -1,0 +1,10 @@
+Metric,Value
+Total Episodes,2000.0
+Overall Success Rate (%),99.45
+Last 100 Success Rate (%),100.0
+Overall Average Reward,69.52
+Last 100 Average Reward,90.66
+Overall Average Steps,14.3
+Last 100 Average Steps,10.07
+Optimal Path Moves,10.0
+Final Epsilon,0.01
